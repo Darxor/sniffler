@@ -11,7 +11,7 @@ rye init . --virtual
 rye sync --no-dev
 ```
 
-### With [pip]
+### With pip
 
 Suggested to use a [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
 
