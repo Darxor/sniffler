@@ -37,6 +37,11 @@ options:
                         The path to the output file.
 ```
 
+Alternatively, you can run `src/sniffler` directly.
+```bash
+python src/sniffler -h
+```
+
 This will collect information about the files in the current directory and output it to `output.tsv`.
 ```bash
 sniffler . -O output.tsv

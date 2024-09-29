@@ -25,5 +25,3 @@ def main():
     else:
         print(collector.collection.to_tsv())
 
-if __name__ == "__main__":
-    main()
