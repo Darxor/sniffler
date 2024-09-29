@@ -5,7 +5,7 @@ from typing import Any
 
 from tqdm import tqdm
 
-from .researcher import Researcher
+from .researcher import InfoValue, Researcher
 
 
 class Explorer:
@@ -18,7 +18,7 @@ class Explorer:
                 yield Path(root, f)
 
 
-class Collection(list[dict[str, str | int | float]]):
+class Collection(list[dict[str, InfoValue]]):
     # use dict to ensure order of keys in Python 3.7+
     __keys = {}
 
@@ -57,5 +57,5 @@ class Collector:
             file_info = {"path": f.relative_to(self.path)}
             for researcher in self.researchers:
                 if researcher.accepts(f):
-                    file_info.update(researcher.get_info(f))
+                    file_info |= researcher.get_info(f)
             self.collection.append(file_info)

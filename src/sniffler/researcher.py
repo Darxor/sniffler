@@ -1,21 +1,22 @@
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Protocol
 
 from PIL import Image
 from PIL.ExifTags import GPSTAGS, IFD, TAGS
 
+InfoValue = str | int | float | None
 
 class Researcher(Protocol):
     def accepts(self, file: Path) -> bool: ...
 
-    def get_info(self, file: Path) -> dict[str, Any]: ...
+    def get_info(self, file: Path) -> dict[str, InfoValue]: ...
 
 
 class BasicResearcher:
     def accepts(self, file: Path) -> bool:
         return True
 
-    def get_info(self, file: Path) -> dict[str, Any]:
+    def get_info(self, file: Path) -> dict[str, InfoValue]:
         return {"name": file.name, "size": file.stat().st_size}
 
 
@@ -23,7 +24,7 @@ class ImageResearcher:
     def accepts(self, file: Path) -> bool:
         return file.suffix.lower() in {".jpg", ".png", ".jpeg", ".gif", ".bmp", ".tiff", ".webp"}
 
-    def get_info(self, file: Path) -> dict[str, Any]:
+    def get_info(self, file: Path) -> dict[str, InfoValue]:
         with Image.open(file) as img:
             width, height = img.size
             xres, yres = img.info.get("dpi", (None, None))
@@ -32,7 +33,7 @@ class ImageResearcher:
         return {"width": width, "height": height, "xres": xres, "yres": yres, **exif}
 
     @staticmethod
-    def __get_exif_as_dict(img: Image.Image) -> dict[str, Any]:
+    def __get_exif_as_dict(img: Image.Image) -> dict[str, InfoValue]:
         # https://stackoverflow.com/a/75357594
         exif = img.getexif()
         exif_tags = {TAGS[k]: v for k, v in exif.items()}
