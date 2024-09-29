@@ -32,7 +32,7 @@ class ImageResearcher:
         return {"width": width, "height": height, "xres": xres, "yres": yres, **exif}
 
     @staticmethod
-    def __get_exif_as_dict(img: Image) -> dict[str, Any]:
+    def __get_exif_as_dict(img: Image.Image) -> dict[str, Any]:
         # https://stackoverflow.com/a/75357594
         exif = img.getexif()
         exif_tags = {TAGS[k]: v for k, v in exif.items()}
