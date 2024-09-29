@@ -1,0 +1,63 @@
+[project]
+name = "sniffler"
+version = "0.1.0"
+description = "Sniff out stuff about your files"
+authors = [
+    { name = "Alexander Sevostianov" }
+]
+dependencies = [
+    "pillow>=10.4.0",
+    "tqdm>=4.66.5",
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+
+[project.scripts]
+sniffler = "sniffler.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sniffler"]
+
+[tool.ruff]
+line-length = 120
+
+lint.select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+lint.ignore = [
+    "E501",  # line too long, handled by formatter
+]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+extra-standard-library = ["typing"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+known-first-party = ["processing_v2"]
+
+[tool.ruff.lint.flake8-bugbear]
+# Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403", "E402"]
+"**/{tests,docs}/*" = ["E402"]
