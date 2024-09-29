@@ -10,6 +10,9 @@
 #   universal: false
 
 -e file:.
+nodeenv==1.9.1
 pillow==10.4.0
+pyright==1.1.382.post1
 ruff==0.6.8
 tqdm==4.66.5
+typing-extensions==4.12.2

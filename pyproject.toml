@@ -23,6 +23,7 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
     "ruff>=0.6.8",
+    "pyright>=1.1.382.post1",
 ]
 
 [tool.hatch.metadata]
@@ -57,3 +58,6 @@ known-first-party = ["sniffler"]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403", "E402"]
 "**/{tests,docs}/*" = ["E402"]
+
+[tool.pyright]
+include = ["src"]
