@@ -75,7 +75,13 @@ class ImageResearcher:
             xres, yres = img.info.get("dpi", (None, None))
             exif = {f"exif:{k}": v for k, v in self.__get_exif_as_dict(img).items()}
 
-        return {"width": width, "height": height, "xres": xres, "yres": yres, **exif}
+        return {
+            "width": width,
+            "height": height,
+            "xres": float(xres) if xres else None,
+            "yres": float(yres) if yres else None,
+            **exif,
+        }
 
     @staticmethod
     def __get_exif_as_dict(img: Image.Image) -> dict[str, InfoValue]:
