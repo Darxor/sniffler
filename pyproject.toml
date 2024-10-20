@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "pillow>=10.4.0",
     "tqdm>=4.66.5",
+    "tinytag @ git+https://github.com/tinytag/tinytag",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"

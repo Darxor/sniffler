@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from .collector import Collector
 from .csv_writer import write_csv
-from .researcher import BasicResearcher, ImageResearcher
+from .researcher import AudioResearcher, BasicResearcher, ImageResearcher
 
 parser = argparse.ArgumentParser(description="Collect information about files in a directory.")
 parser.add_argument(
@@ -22,6 +22,7 @@ def main():
     researchers = [
         BasicResearcher(),
         ImageResearcher(),
+        AudioResearcher(),
     ]
     collector = Collector(args.path[0], researchers, progress_bar=partial(tqdm, desc="Collecting", unit=" files"))
     collector.collect(show_progress=bool(args.output))

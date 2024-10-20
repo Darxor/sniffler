@@ -11,4 +11,8 @@
 
 -e file:.
 pillow==10.4.0
+    # via sniffler
+tinytag @ git+https://github.com/tinytag/tinytag@b06284d3a8e4c6995ae972224974dcb40c7fa5df
+    # via sniffler
 tqdm==4.66.5
+    # via sniffler
