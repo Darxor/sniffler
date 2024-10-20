@@ -36,7 +36,7 @@ class ImageResearcher:
     def __get_exif_as_dict(img: Image.Image) -> dict[str, InfoValue]:
         # https://stackoverflow.com/a/75357594
         exif = img.getexif()
-        exif_tags = {TAGS[k]: v for k, v in exif.items()}
+        exif_tags = {TAGS.get(k, f"unknown_exif_{k}"): v for k, v in exif.items()}
 
         for ifd_id in IFD:
             try:
