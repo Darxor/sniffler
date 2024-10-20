@@ -21,7 +21,7 @@ def main():
 
     if args.output:
         with open(args.output, "w") as f:
-            f.write(collector.collection.to_tsv())
+            f.write(collector.collection.to_csv())
     else:
-        print(collector.collection.to_tsv())
+        print(collector.collection.to_csv())
 

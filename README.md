@@ -42,7 +42,9 @@ Alternatively, you can run `src/sniffler` directly.
 python src/sniffler -h
 ```
 
-This will collect information about the files in the current directory and output it to `output.tsv`.
+This will collect information about the files in the current directory and output it to `output.csv`.
 ```bash
-sniffler . -O output.tsv
+sniffler . -O output.csv
 ```
+
+Note: When no output file is specified, the output will be printed to the console as a CSV.

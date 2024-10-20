@@ -30,12 +30,15 @@ class Collection(list[dict[str, InfoValue]]):
     def __repr__(self) -> str:
         return f"Collection({super().__repr__()})"
 
-    def to_tsv(self) -> str:
+    def to_csv(self, sep: str = ",") -> str:
         keys = list(self.__keys.keys())
         lines = [keys]
         for item in self:
             lines.append([str(item.get(k, "")) for k in keys])
-        return "\n".join("\t".join(line) for line in lines)
+        return "\n".join(str(sep).join(line) for line in lines)
+
+    def to_tsv(self) -> str:
+        return self.to_csv(sep="\t")
 
 
 class Collector:
