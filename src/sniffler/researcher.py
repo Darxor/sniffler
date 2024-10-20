@@ -6,6 +6,7 @@ from PIL.ExifTags import GPSTAGS, IFD, TAGS
 
 InfoValue = str | int | float | None
 
+
 class Researcher(Protocol):
     def accepts(self, file: Path) -> bool: ...
 

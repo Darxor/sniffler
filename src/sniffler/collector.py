@@ -1,7 +1,7 @@
 import os
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 from tqdm import tqdm
 
@@ -41,20 +41,29 @@ class Collection(list[dict[str, InfoValue]]):
         return self.to_csv(sep="\t")
 
 
+class ProgressBar(Protocol):
+    def __call__(self, iterable: Iterable, **kwargs: Any) -> Iterable: ...
+
+
 class Collector:
-    def __init__(self, path: str | Path, researchers: list[Researcher]) -> None:
+    def __init__(self, path: str | Path, researchers: list[Researcher], progress_bar: ProgressBar = tqdm) -> None:
         self.path = Path(path).resolve(strict=True)
         self.explorer = Explorer(path)
         self.researchers = researchers
         self.collection: Collection = Collection()
+        self.progress_bar = progress_bar
 
     def add_researcher(self, researcher: Researcher) -> None:
         self.researchers.append(researcher)
 
-    def collect(self, show_progress: bool = False) -> None:
+    def collect(self, show_progress: bool = False, progress_bar_kwargs: dict[str, Any] | None = None) -> None:
         file_iterator = self.explorer.files()
+
+        if progress_bar_kwargs is None:
+            progress_bar_kwargs = {}
+
         if show_progress:
-            file_iterator = tqdm(file_iterator, desc="Collecting", unit=" files")
+            file_iterator = self.progress_bar(file_iterator, **progress_bar_kwargs)
 
         for f in file_iterator:
             file_info = {"path": f.relative_to(self.path)}
