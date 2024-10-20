@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
@@ -46,7 +47,18 @@ class BasicResearcher:
         return True
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:
-        return {"name": file.name, "size": file.stat().st_size}
+        stat = file.stat()
+
+        def to_dt(timestamp: float | int) -> str:
+            return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+
+        return {
+            "name": file.name,
+            "extension": file.suffix.lower(),
+            "size": stat.st_size,
+            "modified": to_dt(stat.st_mtime),
+            "created": to_dt(stat.st_birthtime),
+        }
 
 
 class ImageResearcher:
