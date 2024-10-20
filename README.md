@@ -24,7 +24,7 @@ pip install .
 
 ```bash
 > sniffler -h
-usage: sniffler [-h] [-O OUTPUT] path
+usage: sniffler [-h] [-O OUTPUT] [--delimiter DELIMITER] path
 
 Collect information about files in a directory.
 
@@ -35,6 +35,8 @@ options:
   -h, --help            show this help message and exit
   -O OUTPUT, --output OUTPUT
                         The path to the output file.
+  --delimiter DELIMITER
+                        The delimiter to use in the output file (',', ';', or 'tab').
 ```
 
 Alternatively, you can run `src/sniffler` directly.

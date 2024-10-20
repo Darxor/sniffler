@@ -37,22 +37,6 @@ class Collection(list[dict[str, InfoValue]]):
     """
     Collection is a custom list subclass that stores dictionaries with string keys and InfoValue values.
     It maintains the order of keys across all dictionaries added to it.
-
-    Attributes:
-        __keys (dict): A dictionary to ensure the order of keys in Python 3.7+.
-
-    Methods:
-        append(object: dict[str, Any]) -> None:
-            Adds a dictionary to the collection and updates the key order.
-
-        __repr__() -> str:
-            Returns a string representation of the Collection.
-
-        to_csv(sep=",") -> str:
-            Converts the collection to a CSV formatted string with the specified separator.
-
-        to_tsv() -> str:
-            Converts the collection to a TSV formatted string.
     """
 
     # use dict to ensure order of keys in Python 3.7+
@@ -75,29 +59,15 @@ class Collection(list[dict[str, InfoValue]]):
     def __repr__(self) -> str:
         return f"Collection({super().__repr__()})"
 
-    def to_csv(self, sep: str = ",") -> str:
+    @property
+    def keys(self) -> list[str]:
         """
-        Converts the collected data to a CSV formatted string.
-        Args:
-            sep (str): The separator to use between fields. Defaults to ",".
-        Returns:
-            str: A string representing the data in CSV format.
-        """
-
-        keys = list(self.__keys.keys())
-        lines = [keys]
-        for item in self:
-            lines.append([str(item.get(k, "")) for k in keys])
-        return "\n".join(str(sep).join(line) for line in lines)
-
-    def to_tsv(self) -> str:
-        """
-        Convert the data to a TSV (Tab-Separated Values) formatted string.
+        Returns the keys in the collection.
 
         Returns:
-            str: The data in TSV format.
+            list[str]: A list of keys.
         """
-        return self.to_csv(sep="\t")
+        return list(self.__keys.keys())
 
 
 class ProgressBar(Protocol):
