@@ -8,12 +8,40 @@ InfoValue = str | int | float | None
 
 
 class Researcher(Protocol):
-    def accepts(self, file: Path) -> bool: ...
+    """
+    Interface for a Researcher that defines methods to accept a file and retrieve information from it.
+    """
 
-    def get_info(self, file: Path) -> dict[str, InfoValue]: ...
+    def accepts(self, file: Path) -> bool:
+        """
+        Determines if the given file is accepted.
+
+        Args:
+            file (Path): The file to be checked.
+
+        Returns:
+            bool: Always returns True.
+        """
+        ...
+
+    def get_info(self, file: Path) -> dict[str, InfoValue]:
+        """
+        Retrieves information about a given file.
+
+        Args:
+            file (Path): The path to the file.
+
+        Returns:
+            dict[str, InfoValue]: A dictionary containing the file's stat information.
+        """
+        ...
 
 
 class BasicResearcher:
+    """
+    BasicResearcher is a class that provides basic file research functionalities.
+    """
+
     def accepts(self, file: Path) -> bool:
         return True
 
@@ -22,6 +50,10 @@ class BasicResearcher:
 
 
 class ImageResearcher:
+    """
+    A class to perform research operations on image files.
+    """
+
     def accepts(self, file: Path) -> bool:
         return file.suffix.lower() in {".jpg", ".png", ".jpeg", ".gif", ".bmp", ".tiff", ".webp"}
 
