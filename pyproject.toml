@@ -10,6 +10,7 @@ dependencies = [
     "tqdm>=4.66.5",
     "pymupdf>=1.24.11",
     "mutagen>=1.47.0",
+    "olefile>=0.47",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"

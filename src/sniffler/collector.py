@@ -129,5 +129,8 @@ class Collector:
             file_info = {"path": f.relative_to(self.path)}
             for researcher in self.researchers:
                 if researcher.accepts(f):
-                    file_info |= researcher.get_info(f)
+                    try:
+                        file_info |= researcher.get_info(f)
+                    except Exception as e:
+                        print(f"Error processing '{f}': {e}")
             self.collection.append(file_info)
