@@ -8,7 +8,7 @@ from tkinter import PhotoImage
 
 import customtkinter as ctk
 
-from .collector import Collector
+from .collector import Collection, Collector
 from .csv_writer import write_csv
 from .gui_components import AutoHidingScrollableFrame, CTkTqdm
 from .researchers import (
@@ -20,6 +20,8 @@ from .researchers import (
     PdfResearcher,
     Researcher,
 )
+from .stats import StatCalculator
+from .utils import convert_size
 
 ICON_PATH = Path(__file__).parent / "assets" / "sniffler.png"
 
@@ -55,23 +57,36 @@ class ChoosePath(ctk.CTkFrame):
             self.label.configure(text=str(self.path.resolve()))
 
 
-class AppController:
+class CollectTab(ctk.CTkFrame):
     def __init__(
         self,
+        master,
         researchers: list[Callable[..., Researcher]],
-        source: ChoosePath,
-        target: ChoosePath,
-        progress_bar: ctk.CTkProgressBar,
-        status_label: ctk.CTkLabel,
-        start_button: ctk.CTkButton,
+        callback: Callable[[], None] | None = None,
+        **kwargs,
     ):
-        logger.info("Initializing controller...")
+        super().__init__(master, **kwargs)
         self.researchers = researchers
-        self.source = source
-        self.target = target
-        self.progress_bar = progress_bar
-        self.status_label = status_label
-        self.start_button = start_button
+        self.collection: Collection | None = None
+        self.callback = callback
+
+        self.grid_columnconfigure((0, 1), weight=1)
+
+        self.source = ChoosePath(self, Path("."), title="Choose a directory to sniff", button_text="Browse")
+        self.source.grid(row=0, column=0, columnspan=2, pady=(20, 0), padx=20, sticky="ew")
+
+        self.target = ChoosePath(self, Path("."), title="Choose output directory", button_text="Browse")
+        self.target.grid(row=2, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
+
+        self.start_button = ctk.CTkButton(self, text="Start", height=40, command=self.start_collection)
+        self.start_button.grid(row=3, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
+
+        self.progress_bar = ctk.CTkProgressBar(self)
+        self.progress_bar.grid(row=4, column=0, columnspan=2, pady=(0, 0), padx=20, sticky="ew")
+        self.progress_bar.set(0)
+
+        self.status_label = ctk.CTkLabel(self, text="Ready for sniffling", font=ctk.CTkFont(size=10))
+        self.status_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
 
     def start_collection(self) -> None:
         logger.info("Starting collection...")
@@ -92,14 +107,62 @@ class AppController:
             if collector and collector.collection:
                 self.progress_bar.set(1)
                 logger.info("Collection finished.")
+                self.collection = collector.collection
                 write_csv(
                     self.target.path.joinpath("out.csv"), collector.collection.keys, collector.collection, delimiter=";"
                 )
                 logger.info("CSV saved.")
                 self.start_button.configure(state="normal")
-                self.status_label.configure(text="Sniffling complete, output saved to 'out.csv' in the target directory.")
+                self.status_label.configure(
+                    text="Sniffling complete, output saved to 'out.csv' in the target directory."
+                )
+                if self.callback is not None:
+                    self.callback()
 
         threading.Thread(target=task).start()
+
+
+class StatsTab(ctk.CTkFrame):
+    def __init__(self, master, collection: Collection | None = None, **kwargs):
+        super().__init__(master, **kwargs)
+        if collection is None:
+            self.label = ctk.CTkLabel(self, text="No files are sniffled yet.")
+            self.label.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+            return
+
+        self.stats = StatCalculator(collection)
+
+        self.textbox = ctk.CTkTextbox(self, font=ctk.CTkFont(size=12), height=300)
+        self.textbox.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+
+        self.textbox.insert("end", f"Total files: {self.stats.total_files()}\n")
+        self.textbox.insert("end", f"Total size: {convert_size(self.stats.total_size())}\n\n")
+        self.textbox.insert("end", "Count by extension:\n")
+
+        for ext, count in self.stats.count_by_extension().most_common():
+            self.textbox.insert("end", f"\t{ext}: {count}\n")
+
+        self.textbox.insert("end", "\nTop 10 largest files:\n")
+        for file in self.stats.top_n_largest_files(10):
+            self.textbox.insert("end", f"\t{file['path']} ({convert_size(int(file['size']))})\n")  # type: ignore
+
+        self.textbox.configure(state="disabled")
+
+
+class AboutTab(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        about_text = (
+            "Sniffler is a tool to collect information about files in a directory.\n"
+            "It is built using Python and Tkinter.\n\n"
+            "Developed by: Alexander Sevostianov\n"
+            "GitHub: https://github.com/Darxor/"
+        )
+        about_label = ctk.CTkLabel(self, text=about_text, font=ctk.CTkFont(size=12))
+        about_label.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
 
 class AppUI(ctk.CTk):
@@ -111,64 +174,37 @@ class AppUI(ctk.CTk):
         self.title(title)
         self.geometry(f"{dims[0]}x{dims[1]}")
         self.iconphoto(True, PhotoImage(file=ICON_PATH))
-        self.grid_columnconfigure((0, 1), weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        # Initialize UI components
         self.tabs = ctk.CTkTabview(self)
         self.tabs.grid(row=0, column=0, columnspan=2, pady=(10, 20), padx=20, sticky="nsew")
-        self.tabs.add("Collect")
-        self.tabs.add("Stats")
-        self.tabs.add("About")
 
-        # Collect tab layout
-        collect_tab = self.tabs.tab("Collect")
-        collect_tab.grid_columnconfigure((0, 1), weight=1)
+        for tab_name in ["Collect", "Stats", "About"]:
+            self.tabs.add(tab_name)
 
-        # Path selection components
-        self.source = ChoosePath(collect_tab, Path("."), title="Choose a directory to sniff", button_text="Browse")
-        self.source.grid(row=0, column=0, columnspan=2, pady=(20, 0), padx=20, sticky="ew")
+        self.collect_tab = CollectTab(self.tabs.tab("Collect"), researchers=researchers, callback=self.collect_callback)
+        self.configure_tab_fullwindow(self.collect_tab)
 
-        self.target = ChoosePath(collect_tab, Path("."), title="Choose output directory", button_text="Browse")
-        self.target.grid(row=2, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
+        self.stats_tab = StatsTab(self.tabs.tab("Stats"))
+        self.configure_tab_fullwindow(self.stats_tab)
 
-        # Start button
-        self.start_button = ctk.CTkButton(collect_tab, text="Start", height=40)
-        self.start_button.grid(row=3, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
-
-        # Progress bar and status label
-        self.progress_bar = ctk.CTkProgressBar(collect_tab)
-        self.progress_bar.grid(row=4, column=0, columnspan=2, pady=(0, 0), padx=20, sticky="ew")
-        self.progress_bar.set(0)
-
-        self.status_label = ctk.CTkLabel(collect_tab, text="Ready for sniffling", font=ctk.CTkFont(size=10))
-        self.status_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
-
-        # Stats tab layout
-        stats_tab = self.tabs.tab("Stats")
-        stats_tab.grid_columnconfigure(0, weight=1)
-        stats_tab.grid_rowconfigure(0, weight=1)
-
-        # About tab layout
-        about_tab = self.tabs.tab("About")
-        about_tab.grid_columnconfigure(0, weight=1)
-        about_tab.grid_rowconfigure(0, weight=1)
-
-        about_text = (
-            "Sniffler is a tool to collect information about files in a directory.\n"
-            "It is built using Python and Tkinter.\n\n"
-            "Developed by: Alexander Sevostianov\n"
-            "GitHub: https://github.com/Darxor/"
-        )
-        about_label = ctk.CTkLabel(about_tab, text=about_text, font=ctk.CTkFont(size=12))
-        about_label.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
-
-        # Controller setup
-        self.controller = AppController(
-            researchers, self.source, self.target, self.progress_bar, self.status_label, self.start_button
-        )
-        self.start_button.configure(command=self.controller.start_collection)
+        self.about_tab = AboutTab(self.tabs.tab("About"))
+        self.configure_tab_fullwindow(self.about_tab)
 
         self.focus_force()
+
+    def collect_callback(self) -> None:
+        self.stats_tab = StatsTab(self.tabs.tab("Stats"), collection=self.collect_tab.collection)
+        self.configure_tab_fullwindow(self.stats_tab)
+
+    @staticmethod
+    def configure_tab_fullwindow(tab: ctk.CTkFrame | ctk.CTkScrollableFrame, **kwargs) -> None:
+        tab.master.grid_columnconfigure(0, weight=1)
+        tab.master.grid_rowconfigure(0, weight=1)
+
+        tab.grid(row=0, column=0, sticky="nsew")
+        tab.grid_columnconfigure(0, weight=1)
+        tab.grid_rowconfigure(0, weight=1)
 
 
 def main() -> None:
