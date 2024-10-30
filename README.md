@@ -54,6 +54,7 @@ options:
                         The path to the output file.
   --delimiter DELIMITER
                         The delimiter to use in the output file (',', ';', or 'tab').
+  --search SEARCH       Search for files containing the given string in filename or attributes.
 ```
 
 Alternatively, you can run `src/sniffler` directly.
