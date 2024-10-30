@@ -40,7 +40,7 @@ def main():
     ]
     collector = Collector(args.path[0], researchers, progress_bar=partial(tqdm, desc="Collecting", unit=" files"))
     collector.collect(show_progress=bool(args.output))
-    stats_calculator = StatCalculator(collector)
+    stats_calculator = StatCalculator(collector.collection)
 
     if args.output:
         write_csv(args.output, collector.collection.keys, collector.collection, delimiter=args.delimiter)

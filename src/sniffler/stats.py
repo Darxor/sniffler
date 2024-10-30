@@ -1,17 +1,17 @@
 from collections import Counter
 
-from .collector import Collection, Collector
+from .collector import Collection
 
 
 class StatCalculator:
-    def __init__(self, collector: Collector) -> None:
+    def __init__(self, collection: Collection) -> None:
         """
         Initializes the Stats object with a given Collector instance.
 
         Args:
-            collector (Collector): The collector instance used for gathering statistics.
+            collection (Collection): The collectoin instance used for gathering statistics.
         """
-        self.collector = collector
+        self.collection = collection
 
     def total_files(self) -> int:
         """
@@ -20,7 +20,7 @@ class StatCalculator:
         Returns:
             int: The total number of files in the collection.
         """
-        return len(self.collector.collection)
+        return len(self.collection)
 
     def total_size(self) -> int:
         """
@@ -29,7 +29,7 @@ class StatCalculator:
         Returns:
             int: The total size of all files in the collection.
         """
-        return sum(float(file.get("size", 0)) for file in self.collector.collection)  # type: ignore
+        return sum(float(file.get("size", 0)) for file in self.collection)  # type: ignore
 
     def count_by_extension(self) -> Counter[str]:
         """
@@ -43,7 +43,7 @@ class StatCalculator:
             Counter[str]: A Counter object where the keys are file extensions and the
                           values are the counts of files with those extensions.
         """
-        cnt = Counter(str(file.get("extension", "no_extension")) for file in self.collector.collection)
+        cnt = Counter(str(file.get("extension", "no_extension")) for file in self.collection)
         cnt["no_extension"] += cnt.pop("")
         return cnt
 
@@ -57,4 +57,4 @@ class StatCalculator:
         Returns:
             Collection: A collection of the top N largest files, sorted by size in descending order.
         """
-        return sorted(self.collector.collection, key=lambda x: float(int(x.get("size", 0))), reverse=True)[:n]  # type: ignore
+        return sorted(self.collection, key=lambda x: float(int(x.get("size", 0))), reverse=True)[:n]  # type: ignore
