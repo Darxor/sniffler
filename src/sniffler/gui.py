@@ -9,6 +9,7 @@ from tkinter import PhotoImage
 import customtkinter as ctk
 
 from .collector import Collector
+from .csv_writer import write_csv
 from .gui_components import AutoHidingScrollableFrame, CTkTqdm
 from .researchers import (
     AudioResearcher,
@@ -80,16 +81,23 @@ class AppController:
         pbar = partial(CTkTqdm, progressbar=self.progress_bar)
 
         def task():
+            collector = None
             try:
                 collector = Collector(self.source.path, researchers, progress_bar=pbar)
                 collector.collect(show_progress=True)
             except Exception as e:
                 logger.exception(e)
                 self.status_label.configure(text="An error occurred, please check the logs.")
-            finally:
+
+            if collector and collector.collection:
+                self.progress_bar.set(1)
                 logger.info("Collection finished.")
+                write_csv(
+                    self.target.path.joinpath("out.csv"), collector.collection.keys, collector.collection, delimiter=";"
+                )
+                logger.info("CSV saved.")
                 self.start_button.configure(state="normal")
-                self.status_label.configure(text="Sniffling complete")
+                self.status_label.configure(text="Sniffling complete, output saved to 'out.csv' in the target directory.")
 
         threading.Thread(target=task).start()
 
@@ -118,7 +126,7 @@ class AppUI(ctk.CTk):
 
         # Path selection components
         self.source = ChoosePath(collect_tab, Path("."), title="Choose a directory to sniff", button_text="Browse")
-        self.source.grid(row=0, column=0, columnspan=2, pady=20, padx=20, sticky="ew")
+        self.source.grid(row=0, column=0, columnspan=2, pady=(20, 0), padx=20, sticky="ew")
 
         self.target = ChoosePath(collect_tab, Path("."), title="Choose output directory", button_text="Browse")
         self.target.grid(row=2, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
