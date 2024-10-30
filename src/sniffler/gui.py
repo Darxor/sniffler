@@ -1,6 +1,7 @@
 import logging
 import sys
 import threading
+import time
 from collections.abc import Callable
 from functools import partial
 from pathlib import Path
@@ -98,12 +99,14 @@ class CollectTab(ctk.CTkFrame):
 
         def task():
             collector = None
+            time_start = time.time()
             try:
                 collector = Collector(self.source.path, researchers, progress_bar=pbar)
                 collector.collect(show_progress=True)
             except Exception as e:
                 logger.exception(e)
                 self.status_label.configure(text="An error occurred, please check the logs.")
+            time_complete = time.time() - time_start
 
             if collector and collector.collection:
                 self.progress_bar.set(1)
@@ -115,7 +118,7 @@ class CollectTab(ctk.CTkFrame):
                 logger.info("CSV saved.")
                 self.start_button.configure(state="normal")
                 self.status_label.configure(
-                    text="Sniffling complete, output saved to 'out.csv' in the target directory."
+                    text=f"Sniffling complete in {time_complete:.2f}s, output saved to 'out.csv' in the target directory."
                 )
                 if self.callback is not None:
                     self.callback()
