@@ -17,7 +17,8 @@ readme = "README.md"
 requires-python = ">= 3.11"
 
 [project.scripts]
-sniffler = "sniffler.cli:main"
+sniffler-cli = "sniffler.cli:main"
+sniffler = "sniffler.gui:main"
 
 [build-system]
 requires = ["hatchling"]
