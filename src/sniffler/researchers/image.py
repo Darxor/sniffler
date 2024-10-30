@@ -44,7 +44,7 @@ class ImageResearcher:
                     resolve = TAGS
 
                 for k, v in ifd.items():
-                    tag = resolve.get(k, k)
+                    tag = resolve.get(k, str(k))
                     exif_tags[tag] = v
 
             except KeyError:

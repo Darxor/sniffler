@@ -1,3 +1,5 @@
+<img align="right" width="128" height="128" src="src/sniffler/assets/sniffler.png">
+
 # Sniffler
 
 Sniff out stuff about your files.
@@ -22,8 +24,23 @@ pip install .
 
 ## Usage
 
+### GUI version
+
+Run the following command to start the GUI version of sniffler
+
 ```bash
-> sniffler -h
+sniffler
+```
+or
+
+```bash
+python src/sniffler/gui.py 
+```
+
+### CLI version
+
+```bash
+> sniffler-cli -h
 usage: sniffler [-h] [-O OUTPUT] [--delimiter DELIMITER] path
 
 Collect information about files in a directory.
@@ -37,6 +54,7 @@ options:
                         The path to the output file.
   --delimiter DELIMITER
                         The delimiter to use in the output file (',', ';', or 'tab').
+  --search SEARCH       Search for files containing the given string in filename or attributes.
 ```
 
 Alternatively, you can run `src/sniffler` directly.

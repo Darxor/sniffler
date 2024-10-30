@@ -1,6 +1,6 @@
 [project]
 name = "sniffler"
-version = "0.2.0"
+version = "0.4.0"
 description = "Sniff out stuff about your files"
 authors = [
     { name = "Alexander Sevostianov" }
@@ -11,12 +11,14 @@ dependencies = [
     "pymupdf>=1.24.11",
     "mutagen>=1.47.0",
     "olefile>=0.47",
+    "customtkinter>=5.2.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"
 
 [project.scripts]
-sniffler = "sniffler.cli:main"
+sniffler-cli = "sniffler.cli:main"
+sniffler = "sniffler.gui:main"
 
 [build-system]
 requires = ["hatchling"]

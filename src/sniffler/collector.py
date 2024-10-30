@@ -21,6 +21,15 @@ class Explorer:
         """
         self.path = Path(path).resolve(strict=True)
 
+    def count_files(self) -> int:
+        """
+        Counts the number of files within the specified directory.
+
+        Returns:
+            int: The number of files found in the directory tree.
+        """
+        return sum(1 for _ in self.files())
+
     def files(self) -> Generator[Path, Any, None]:
         """
         Generates a sequence of file paths within the specified directory.
@@ -123,7 +132,7 @@ class Collector:
             progress_bar_kwargs = {}
 
         if show_progress:
-            file_iterator = self.progress_bar(file_iterator, **progress_bar_kwargs)
+            file_iterator = self.progress_bar(file_iterator, total=self.explorer.count_files(), **progress_bar_kwargs)
 
         for f in file_iterator:
             file_info = {"path": f.relative_to(self.path)}
