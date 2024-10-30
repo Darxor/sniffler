@@ -20,6 +20,7 @@ from .researchers import (
     PdfResearcher,
     Researcher,
 )
+from .search import SearchEngine
 from .stats import StatCalculator
 from .utils import convert_size
 
@@ -149,6 +150,49 @@ class StatsTab(ctk.CTkFrame):
         self.textbox.configure(state="disabled")
 
 
+class SearchTab(ctk.CTkFrame):
+    def __init__(self, master, collection: Collection | None = None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.collection = collection
+        self.search_engine = SearchEngine(collection) if collection else None
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.search_entry = ctk.CTkEntry(self, placeholder_text="Enter search query")
+        self.search_entry.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="ew")
+
+        self.search_button = ctk.CTkButton(self, text="Search", command=self.perform_search)
+        self.search_button.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
+
+        self.results_textbox = ctk.CTkTextbox(self, font=ctk.CTkFont(size=12), height=300)
+        self.results_textbox.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
+
+        if not collection:
+            self.results_textbox.insert("end", "No files are sniffled yet.")
+            self.results_textbox.configure(state="disabled")
+
+    def perform_search(self):
+        if not self.collection:
+            return
+
+        query = self.search_entry.get()
+        if not query or not self.search_engine:
+            return
+
+        results = self.search_engine.search(query)
+        self.results_textbox.configure(state="normal")
+        self.results_textbox.delete("1.0", "end")
+
+        if not results:
+            self.results_textbox.insert("end", "No results found.\n")
+        else:
+            for item in results:
+                self.results_textbox.insert("end", f"{item}\n")
+
+        self.results_textbox.configure(state="disabled")
+
+
 class AboutTab(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -179,7 +223,7 @@ class AppUI(ctk.CTk):
         self.tabs = ctk.CTkTabview(self)
         self.tabs.grid(row=0, column=0, columnspan=2, pady=(10, 20), padx=20, sticky="nsew")
 
-        for tab_name in ["Collect", "Stats", "About"]:
+        for tab_name in ["Collect", "Stats", "Search", "About"]:
             self.tabs.add(tab_name)
 
         self.collect_tab = CollectTab(self.tabs.tab("Collect"), researchers=researchers, callback=self.collect_callback)
@@ -191,11 +235,17 @@ class AppUI(ctk.CTk):
         self.about_tab = AboutTab(self.tabs.tab("About"))
         self.configure_tab_fullwindow(self.about_tab)
 
+        self.search_tab = SearchTab(self.tabs.tab("Search"))
+        self.configure_tab_fullwindow(self.search_tab)
+
         self.focus_force()
 
     def collect_callback(self) -> None:
         self.stats_tab = StatsTab(self.tabs.tab("Stats"), collection=self.collect_tab.collection)
         self.configure_tab_fullwindow(self.stats_tab)
+
+        self.search_tab = SearchTab(self.tabs.tab("Search"), collection=self.collect_tab.collection)
+        self.configure_tab_fullwindow(self.search_tab)
 
     @staticmethod
     def configure_tab_fullwindow(tab: ctk.CTkFrame | ctk.CTkScrollableFrame, **kwargs) -> None:
