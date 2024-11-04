@@ -1,6 +1,4 @@
-<img align="right" width="128" height="128" src="src/sniffler/assets/sniffler.png">
-
-# Sniffler
+# Sniffler <img align="right" width="128" height="128" src="src/sniffler/assets/sniffler.png">
 
 Sniff out stuff about your files.
 
