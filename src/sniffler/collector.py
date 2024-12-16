@@ -84,7 +84,12 @@ class ProgressBar(Protocol):
 
 
 class Collector:
-    def __init__(self, path: str | Path, researchers: list[Researcher], progress_bar: ProgressBar = tqdm) -> None:
+    def __init__(
+        self,
+        path: str | Path,
+        researchers: list[Researcher],
+        progress_bar: ProgressBar = tqdm,
+    ) -> None:
         """
         Initializes the Collector instance.
 
@@ -115,7 +120,11 @@ class Collector:
         """
         self.researchers.append(researcher)
 
-    def collect(self, show_progress: bool = False, progress_bar_kwargs: dict[str, Any] | None = None) -> None:
+    def collect(
+        self,
+        show_progress: bool = False,
+        progress_bar_kwargs: dict[str, Any] | None = None,
+    ) -> None:
         """
         Collects information about files using the configured researchers and adds it to the collection.
 

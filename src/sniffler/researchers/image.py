@@ -12,7 +12,15 @@ class ImageResearcher:
     """
 
     def accepts(self, file: Path) -> bool:
-        return file.suffix.lower() in {".jpg", ".png", ".jpeg", ".gif", ".bmp", ".tiff", ".webp"}
+        return file.suffix.lower() in {
+            ".jpg",
+            ".png",
+            ".jpeg",
+            ".gif",
+            ".bmp",
+            ".tiff",
+            ".webp",
+        }
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:
         with Image.open(file) as img:

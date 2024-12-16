@@ -32,7 +32,13 @@ logger = logging.getLogger(__name__)
 
 
 class ChoosePath(ctk.CTkFrame):
-    def __init__(self, master, path: Path, title: str = "Choose Path", button_text: str = "Browse") -> None:
+    def __init__(
+        self,
+        master,
+        path: Path,
+        title: str = "Choose Path",
+        button_text: str = "Browse",
+    ) -> None:
         super().__init__(master)
         self.path = path
         self.title_text = title
@@ -113,7 +119,10 @@ class CollectTab(ctk.CTkFrame):
                 logger.info("Collection finished.")
                 self.collection = collector.collection
                 write_csv(
-                    self.target.path.joinpath("out.csv"), collector.collection.keys, collector.collection, delimiter=";"
+                    self.target.path.joinpath("out.csv"),
+                    collector.collection.keys,
+                    collector.collection,
+                    delimiter=";",
                 )
                 logger.info("CSV saved.")
                 self.start_button.configure(state="normal")
@@ -214,7 +223,10 @@ class AboutTab(ctk.CTkFrame):
 
 class AppUI(ctk.CTk):
     def __init__(
-        self, researchers: list[Callable[..., Researcher]], title: str = "Sniffler", dims: tuple[int, int] = (700, 500)
+        self,
+        researchers: list[Callable[..., Researcher]],
+        title: str = "Sniffler",
+        dims: tuple[int, int] = (700, 500),
     ) -> None:
         logger.info("Initializing UI...")
         super().__init__()
@@ -229,7 +241,11 @@ class AppUI(ctk.CTk):
         for tab_name in ["Collect", "Stats", "Search", "About"]:
             self.tabs.add(tab_name)
 
-        self.collect_tab = CollectTab(self.tabs.tab("Collect"), researchers=researchers, callback=self.collect_callback)
+        self.collect_tab = CollectTab(
+            self.tabs.tab("Collect"),
+            researchers=researchers,
+            callback=self.collect_callback,
+        )
         self.configure_tab_fullwindow(self.collect_tab)
 
         self.stats_tab = StatsTab(self.tabs.tab("Stats"))
