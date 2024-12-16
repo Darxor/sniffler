@@ -24,7 +24,10 @@ def localize_floats(row: Mapping[str, Any]) -> dict[str, Any]:
     Returns:
         dict[str, Any]: A new dictionary with float values converted to strings with commas as decimal separators.
     """
-    return {key: str(value).replace(".", ",") if isinstance(value, float) else value for key, value in row.items()}
+    return {
+        key: str(value).replace(".", ",") if isinstance(value, float) else value
+        for key, value in row.items()
+    }
 
 
 def write_csv(

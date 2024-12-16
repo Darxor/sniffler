@@ -33,6 +33,9 @@ dev-dependencies = [
     "pyright>=1.1.382.post1",
 ]
 
+[tool.rye.scripts]
+dj = "python django_manage.py"
+
 [tool.hatch.metadata]
 allow-direct-references = true
 

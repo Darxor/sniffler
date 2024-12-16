@@ -14,7 +14,8 @@ class ModernOfficeResearcher:
     def get_info(self, file: Path) -> dict[str, InfoValue]:
         reserved_keys = {"created", "modified"}
         metadata = {
-            (f"office_{k}" if k in reserved_keys else k): v for k, v in extract_openxml_office_metadata(file).items()
+            (f"office_{k}" if k in reserved_keys else k): v
+            for k, v in extract_openxml_office_metadata(file).items()
         }
         return metadata
 
@@ -26,7 +27,8 @@ class LegacyOfficeResearcher:
     def get_info(self, file: Path) -> dict[str, InfoValue]:
         reserved_keys = {"created", "modified"}
         metadata = {
-            (f"office_{k}" if k in reserved_keys else k): v for k, v in extract_ole_office_metadata(file).items()
+            (f"office_{k}" if k in reserved_keys else k): v
+            for k, v in extract_ole_office_metadata(file).items()
         }
         return metadata
 
@@ -100,7 +102,11 @@ def extract_docx_metadata(z: zipfile.ZipFile) -> dict:
 
 
 def extract_pptx_metadata(z: zipfile.ZipFile) -> dict:
-    slides = [f for f in z.namelist() if f.startswith("ppt/slides/slide") and f.endswith(".xml")]
+    slides = [
+        f
+        for f in z.namelist()
+        if f.startswith("ppt/slides/slide") and f.endswith(".xml")
+    ]
     return {"num_slides": len(slides)}
 
 

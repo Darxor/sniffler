@@ -43,17 +43,31 @@ class ChoosePath(ctk.CTkFrame):
         self.path = path
         self.title_text = title
 
-        self.title_label = ctk.CTkLabel(self, text=self.title_text, font=ctk.CTkFont(size=14, weight="bold"))
-        self.title_label.grid(row=0, column=0, columnspan=3, padx=20, pady=(10, 0), sticky="w")
+        self.title_label = ctk.CTkLabel(
+            self, text=self.title_text, font=ctk.CTkFont(size=14, weight="bold")
+        )
+        self.title_label.grid(
+            row=0, column=0, columnspan=3, padx=20, pady=(10, 0), sticky="w"
+        )
 
-        self.scroll_frame = AutoHidingScrollableFrame(self, height=23, orientation="horizontal")
-        self.scroll_frame.grid(row=1, column=0, padx=(20, 10), pady=(5, 20), sticky="ew")
+        self.scroll_frame = AutoHidingScrollableFrame(
+            self, height=23, orientation="horizontal"
+        )
+        self.scroll_frame.grid(
+            row=1, column=0, padx=(20, 10), pady=(5, 20), sticky="ew"
+        )
 
-        self.label = ctk.CTkLabel(self.scroll_frame, text=str(self.path.resolve()), height=9)
+        self.label = ctk.CTkLabel(
+            self.scroll_frame, text=str(self.path.resolve()), height=9
+        )
         self.label.grid(row=0, column=0, sticky="nw")
 
-        self.browse_button = ctk.CTkButton(self, text=button_text, command=self.browse_callback)
-        self.browse_button.grid(row=1, column=2, padx=(0, 20), pady=(5, 20), sticky="nsew")
+        self.browse_button = ctk.CTkButton(
+            self, text=button_text, command=self.browse_callback
+        )
+        self.browse_button.grid(
+            row=1, column=2, padx=(0, 20), pady=(5, 20), sticky="nsew"
+        )
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -80,20 +94,36 @@ class CollectTab(ctk.CTkFrame):
 
         self.grid_columnconfigure((0, 1), weight=1)
 
-        self.source = ChoosePath(self, Path("."), title="Choose a directory to sniff", button_text="Browse")
-        self.source.grid(row=0, column=0, columnspan=2, pady=(20, 0), padx=20, sticky="ew")
+        self.source = ChoosePath(
+            self, Path("."), title="Choose a directory to sniff", button_text="Browse"
+        )
+        self.source.grid(
+            row=0, column=0, columnspan=2, pady=(20, 0), padx=20, sticky="ew"
+        )
 
-        self.target = ChoosePath(self, Path("."), title="Choose output directory", button_text="Browse")
-        self.target.grid(row=2, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
+        self.target = ChoosePath(
+            self, Path("."), title="Choose output directory", button_text="Browse"
+        )
+        self.target.grid(
+            row=2, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew"
+        )
 
-        self.start_button = ctk.CTkButton(self, text="Start", height=40, command=self.start_collection)
-        self.start_button.grid(row=3, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew")
+        self.start_button = ctk.CTkButton(
+            self, text="Start", height=40, command=self.start_collection
+        )
+        self.start_button.grid(
+            row=3, column=0, columnspan=2, pady=(0, 20), padx=20, sticky="ew"
+        )
 
         self.progress_bar = ctk.CTkProgressBar(self)
-        self.progress_bar.grid(row=4, column=0, columnspan=2, pady=(0, 0), padx=20, sticky="ew")
+        self.progress_bar.grid(
+            row=4, column=0, columnspan=2, pady=(0, 0), padx=20, sticky="ew"
+        )
         self.progress_bar.set(0)
 
-        self.status_label = ctk.CTkLabel(self, text="Ready for sniffling", font=ctk.CTkFont(size=10))
+        self.status_label = ctk.CTkLabel(
+            self, text="Ready for sniffling", font=ctk.CTkFont(size=10)
+        )
         self.status_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
 
     def start_collection(self) -> None:
@@ -111,7 +141,9 @@ class CollectTab(ctk.CTkFrame):
                 collector.collect(show_progress=True)
             except Exception as e:
                 logger.exception(e)
-                self.status_label.configure(text="An error occurred, please check the logs.")
+                self.status_label.configure(
+                    text="An error occurred, please check the logs."
+                )
             time_complete = time.time() - time_start
 
             if collector and collector.collection:
@@ -149,7 +181,9 @@ class StatsTab(ctk.CTkFrame):
         self.textbox.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         self.textbox.insert("end", f"Total files: {self.stats.total_files()}\n")
-        self.textbox.insert("end", f"Total size: {convert_size(self.stats.total_size())}\n\n")
+        self.textbox.insert(
+            "end", f"Total size: {convert_size(self.stats.total_size())}\n\n"
+        )
         self.textbox.insert("end", "Count by extension:\n")
 
         for ext, count in self.stats.count_by_extension().most_common():
@@ -174,10 +208,14 @@ class SearchTab(ctk.CTkFrame):
         self.search_entry = ctk.CTkEntry(self, placeholder_text="Enter search query")
         self.search_entry.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="ew")
 
-        self.search_button = ctk.CTkButton(self, text="Search", command=self.perform_search)
+        self.search_button = ctk.CTkButton(
+            self, text="Search", command=self.perform_search
+        )
         self.search_button.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
 
-        self.results_textbox = ctk.CTkTextbox(self, font=ctk.CTkFont(size=12), height=300)
+        self.results_textbox = ctk.CTkTextbox(
+            self, font=ctk.CTkFont(size=12), height=300
+        )
         self.results_textbox.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
 
         if not collection:
@@ -236,7 +274,9 @@ class AppUI(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         self.tabs = ctk.CTkTabview(self)
-        self.tabs.grid(row=0, column=0, columnspan=2, pady=(10, 20), padx=20, sticky="nsew")
+        self.tabs.grid(
+            row=0, column=0, columnspan=2, pady=(10, 20), padx=20, sticky="nsew"
+        )
 
         for tab_name in ["Collect", "Stats", "Search", "About"]:
             self.tabs.add(tab_name)
@@ -260,14 +300,20 @@ class AppUI(ctk.CTk):
         self.focus_force()
 
     def collect_callback(self) -> None:
-        self.stats_tab = StatsTab(self.tabs.tab("Stats"), collection=self.collect_tab.collection)
+        self.stats_tab = StatsTab(
+            self.tabs.tab("Stats"), collection=self.collect_tab.collection
+        )
         self.configure_tab_fullwindow(self.stats_tab)
 
-        self.search_tab = SearchTab(self.tabs.tab("Search"), collection=self.collect_tab.collection)
+        self.search_tab = SearchTab(
+            self.tabs.tab("Search"), collection=self.collect_tab.collection
+        )
         self.configure_tab_fullwindow(self.search_tab)
 
     @staticmethod
-    def configure_tab_fullwindow(tab: ctk.CTkFrame | ctk.CTkScrollableFrame, **kwargs) -> None:
+    def configure_tab_fullwindow(
+        tab: ctk.CTkFrame | ctk.CTkScrollableFrame, **kwargs
+    ) -> None:
         tab.master.grid_columnconfigure(0, weight=1)
         tab.master.grid_rowconfigure(0, weight=1)
 

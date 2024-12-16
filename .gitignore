@@ -12,3 +12,9 @@ wheels/
 
 # IDE
 .vscode/
+
+# django
+db.sqlite3
+*.log
+
+.env

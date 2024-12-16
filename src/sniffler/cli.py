@@ -18,7 +18,9 @@ from .researchers import (
     PdfResearcher,
 )
 
-parser = argparse.ArgumentParser(description="Collect information about files in a directory.")
+parser = argparse.ArgumentParser(
+    description="Collect information about files in a directory."
+)
 parser.add_argument(
     "path",
     type=Path,
