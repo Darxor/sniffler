@@ -80,8 +80,7 @@ class Collection(list[dict[str, InfoValue]]):
 
 
 class ProgressBar(Protocol):
-    def __call__(self, iterable: Iterable, **kwargs: Any) -> Iterable:
-        ...
+    def __call__(self, iterable: Iterable, **kwargs: Any) -> Iterable: ...
 
 
 class Collector:
@@ -142,9 +141,7 @@ class Collector:
             progress_bar_kwargs = {}
 
         if show_progress:
-            file_iterator = self.progress_bar(
-                file_iterator, total=self.explorer.count_files(), **progress_bar_kwargs
-            )
+            file_iterator = self.progress_bar(file_iterator, total=self.explorer.count_files(), **progress_bar_kwargs)
 
         for f in file_iterator:
             file_info = {"path": f.relative_to(self.path)}
