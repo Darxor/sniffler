@@ -4,8 +4,11 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from .collector import Collection, Collector
-from .csv_writer import write_csv
+from .core.collector import Collection, Collector
+from .core.csv_writer import write_csv
+from .core.search import SearchEngine
+from .core.stats import StatCalculator
+from .core.utils import convert_size
 from .researchers import (
     AudioResearcher,
     BasicResearcher,
@@ -14,9 +17,6 @@ from .researchers import (
     ModernOfficeResearcher,
     PdfResearcher,
 )
-from .search import SearchEngine
-from .stats import StatCalculator
-from .utils import convert_size
 
 parser = argparse.ArgumentParser(description="Collect information about files in a directory.")
 parser.add_argument(

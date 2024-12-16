@@ -9,8 +9,11 @@ from tkinter import PhotoImage
 
 import customtkinter as ctk
 
-from .collector import Collection, Collector
-from .csv_writer import write_csv
+from .core.collector import Collection, Collector
+from .core.csv_writer import write_csv
+from .core.search import SearchEngine
+from .core.stats import StatCalculator
+from .core.utils import convert_size
 from .gui_components import AutoHidingScrollableFrame, CTkTqdm
 from .researchers import (
     AudioResearcher,
@@ -21,9 +24,6 @@ from .researchers import (
     PdfResearcher,
     Researcher,
 )
-from .search import SearchEngine
-from .stats import StatCalculator
-from .utils import convert_size
 
 ICON_PATH = Path(__file__).parent / "assets" / "sniffler.png"
 

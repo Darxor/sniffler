@@ -5,7 +5,7 @@ from typing import Any, Protocol
 
 from tqdm import tqdm
 
-from .researchers import InfoValue, Researcher
+from ..researchers import InfoValue, Researcher
 
 
 class Explorer:
