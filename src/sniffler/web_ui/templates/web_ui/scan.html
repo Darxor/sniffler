@@ -1,0 +1,46 @@
+{% extends 'web_ui/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Run Scan{% endblock %}
+
+{% block content %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Run a New Scan</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% bootstrap_button 'Start Scan' button_type="submit" button_class="btn-primary" %}
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Scan History</h2>
+            <form method="post">
+                {% csrf_token %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scan in scans %}
+                            <tr>
+                                <td>{{ scan.path }}</td>
+                                <td>{{ scan.created_at|date:"d-m-Y H:i" }}</td>
+                                <td>
+                                    <button type="submit" name="scan_id" value="{{ scan.id }}" class="btn btn-primary">Set Active</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}

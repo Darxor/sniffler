@@ -1,8 +1,19 @@
 {% extends 'web_ui/base.html' %}
 {% load django_bootstrap5 %}
 
-{% block title %}django-bootstrap5{% endblock %}
+{% block title %}Welcome to Sniffler{% endblock %}
 
 {% block content %}
-    This is <em>bootstrap5</em> for <strong>Django</strong>.
+    <div class="jumbotron">
+        <p class="lead">Sniffler is a tool for collecting information about files in a directory.</p>
+        <hr class="my-4">
+        <h3>How to Use</h3>
+        <ol>
+            <li>Go to the <a href="{% url 'scan' %}">Scan</a> page.</li>
+            <li>Enter the path of the directory you want to scan.</li>
+            <li>Click the "Start Scan" button to begin the scan.</li>
+            <li>View the scan results in the scan history section.</li>
+            <li>You can set a scan as active to access it on other pages.</li>
+        </ol>
+    </div>
 {% endblock %}
