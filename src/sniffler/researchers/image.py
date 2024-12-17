@@ -10,6 +10,7 @@ class ImageResearcher:
     """
     A class to perform research operations on image files.
     """
+
     @staticmethod
     def accepts(file: Path) -> bool:
         return file.suffix.lower() in {
@@ -58,7 +59,7 @@ class ImageResearcher:
             except KeyError:
                 pass
 
-        return exif_tags # type: ignore
+        return exif_tags  # type: ignore
 
 
 def cast_exif(v):

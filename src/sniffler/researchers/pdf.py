@@ -9,6 +9,7 @@ class PdfResearcher:
     """
     A class to perform research operations on PDF files.
     """
+
     @staticmethod
     def accepts(file: Path) -> bool:
         return file.suffix.lower() == ".pdf"
