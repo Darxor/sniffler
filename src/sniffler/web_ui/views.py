@@ -51,6 +51,11 @@ class ScanView(FormView, ListView):
             if scan_id:
                 request.session["active_scan_id"] = scan_id
                 messages.success(request, "Active scan set successfully.")
+        elif "remove_scan_id" in request.POST:
+            remove_scan_id = request.POST.get("remove_scan_id")
+            if remove_scan_id:
+                ScanResult.objects.filter(id=remove_scan_id).delete()
+                messages.success(request, "Scan removed successfully.")
         else:
             return super().post(request, *args, **kwargs)
         return redirect("scan")
@@ -63,13 +68,18 @@ class StatsView(TemplateView):
         context = super().get_context_data(**kwargs)
         active_scan_id = self.request.session.get("active_scan_id")
         if active_scan_id:
-            scan = ScanResult.objects.get(id=active_scan_id)
-            collection = json.loads(scan.result)
-            stats_calculator = StatCalculator(collection)
+            try:
+                scan = ScanResult.objects.get(id=active_scan_id)
+                collection = json.loads(scan.result)
+                stats_calculator = StatCalculator(collection)
 
-            context["total_size"] = convert_size(stats_calculator.total_size())
-            context["count_by_extension"] = stats_calculator.count_by_extension().most_common()
-            context["top_largest_files"] = stats_calculator.top_n_largest_files(10)
-            context["top_largest_images"] = stats_calculator.top_n_largest_images(10)
-            context["top_documents_by_pages"] = stats_calculator.top_n_documents_by_pages(10)
+                context["total_size"] = convert_size(stats_calculator.total_size())
+                context["count_by_extension"] = stats_calculator.count_by_extension().most_common()
+                context["top_largest_files"] = stats_calculator.top_n_largest_files(10)
+                context["top_largest_images"] = stats_calculator.top_n_largest_images(10)
+                context["top_documents_by_pages"] = stats_calculator.top_n_documents_by_pages(10)
+            except ScanResult.DoesNotExist:
+                context["error"] = "Active scan not found. Please run a new scan, or select one from Scans."
+        else:
+            context["error"] = "No active scan. Please run a new scan, or select one from Scans."
         return context

@@ -4,54 +4,104 @@
 {% block title %}Statistics{% endblock %}
 
 {% block content %}
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 class="card-title">Total Indexed File Size</h3>
-            <p>{{ total_size }}</p>
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
         </div>
-    </div>
+    {% else %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Total Indexed File Size</h3>
+                <p>{{ total_size }}</p>
+            </div>
+        </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 class="card-title">File Statistics by Extension</h3>
-            <ul>
-                {% for ext, count in count_by_extension %}
-                    <li>{{ ext }}: {{ count }}</li>
-                {% endfor %}
-            </ul>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">File Statistics by Extension</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Extension</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ext, count in count_by_extension %}
+                            <tr>
+                                <td>{{ ext }}</td>
+                                <td>{{ count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 class="card-title">Top 10 Largest Files</h3>
-            <ul>
-                {% for file in top_largest_files %}
-                    <li>{{ file.path }} ({{ file.size|filesizeformat }})</li>
-                {% endfor %}
-            </ul>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Top 10 Largest Files</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in top_largest_files %}
+                            <tr>
+                                <td>{{ file.path }}</td>
+                                <td>{{ file.size|filesizeformat }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 class="card-title">Top 10 Largest Images (by area)</h3>
-            <ul>
-                {% for file in top_largest_images %}
-                    <li>{{ file.path }} ({{ file.width }}x{{ file.height }})</li>
-                {% endfor %}
-            </ul>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Top 10 Largest Images (by area)</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Dimensions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in top_largest_images %}
+                            <tr>
+                                <td>{{ file.path }}</td>
+                                <td>{{ file.width }}x{{ file.height }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 class="card-title">Top 10 Documents by Page Count</h3>
-            <ul>
-                {% for file in top_documents_by_pages %}
-                    <li>{{ file.path }} ({{ file.page_count }} pages)</li>
-                {% endfor %}
-            </ul>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Top 10 Documents by Page Count</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Page Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in top_documents_by_pages %}
+                            <tr>
+                                <td>{{ file.path }}</td>
+                                <td>{{ file.page_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}
