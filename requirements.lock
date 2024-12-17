@@ -10,19 +10,28 @@
 #   universal: false
 
 -e file:.
+asgiref==3.8.1
+    # via django
 customtkinter==5.2.2
     # via sniffler
 darkdetect==0.8.0
     # via customtkinter
+django==5.1.4
+    # via django-bootstrap5
+    # via sniffler
+django-bootstrap5==24.3
+    # via sniffler
 mutagen==1.47.0
     # via sniffler
 olefile==0.47
     # via sniffler
-packaging==24.1
+packaging==24.2
     # via customtkinter
 pillow==11.0.0
     # via sniffler
-pymupdf==1.24.13
+pymupdf==1.25.1
     # via sniffler
-tqdm==4.66.6
+sqlparse==0.5.3
+    # via django
+tqdm==4.67.1
     # via sniffler

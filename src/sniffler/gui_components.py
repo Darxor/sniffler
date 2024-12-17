@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tqdm import tqdm
 
-from .utils import inherit_signature_from
+from .core.utils import inherit_signature_from
 
 
 class AutoHidingScrollableFrame(ctk.CTkScrollableFrame):

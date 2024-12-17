@@ -40,7 +40,8 @@ class BasicResearcher:
     BasicResearcher is a class that provides basic file research functionalities.
     """
 
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return True
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:

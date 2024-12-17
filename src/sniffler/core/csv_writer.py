@@ -28,7 +28,10 @@ def localize_floats(row: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def write_csv(
-    filename: Path | str | None, fieldnames: Iterable[str], data: Iterable[Mapping[str, Any]], delimiter: str = ","
+    filename: Path | str | None,
+    fieldnames: Iterable[str],
+    data: Iterable[Mapping[str, Any]],
+    delimiter: str = ",",
 ) -> None:
     """
     Write data to a CSV file with specified fieldnames and delimiter.

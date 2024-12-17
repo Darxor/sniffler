@@ -10,7 +10,8 @@ class PdfResearcher:
     A class to perform research operations on PDF files.
     """
 
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return file.suffix.lower() == ".pdf"
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:

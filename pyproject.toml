@@ -1,6 +1,6 @@
 [project]
 name = "sniffler"
-version = "0.4.0"
+version = "0.5.0"
 description = "Sniff out stuff about your files"
 authors = [
     { name = "Alexander Sevostianov" }
@@ -12,6 +12,8 @@ dependencies = [
     "mutagen>=1.47.0",
     "olefile>=0.47",
     "customtkinter>=5.2.2",
+    "django>=5.1.4",
+    "django-bootstrap5>=24.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"
@@ -30,6 +32,9 @@ dev-dependencies = [
     "ruff>=0.6.8",
     "pyright>=1.1.382.post1",
 ]
+
+[tool.rye.scripts]
+dj = "python django_manage.py"
 
 [tool.hatch.metadata]
 allow-direct-references = true

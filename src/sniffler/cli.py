@@ -4,8 +4,11 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from .collector import Collection, Collector
-from .csv_writer import write_csv
+from .core.collector import Collection, Collector
+from .core.csv_writer import write_csv
+from .core.search import SearchEngine
+from .core.stats import StatCalculator
+from .core.utils import convert_size
 from .researchers import (
     AudioResearcher,
     BasicResearcher,
@@ -14,20 +17,27 @@ from .researchers import (
     ModernOfficeResearcher,
     PdfResearcher,
 )
-from .search import SearchEngine
-from .stats import StatCalculator
-from .utils import convert_size
 
 parser = argparse.ArgumentParser(description="Collect information about files in a directory.")
 parser.add_argument(
-    "path", type=Path, help="The path to the directory to collect information from.", nargs=1, default="."
+    "path",
+    type=Path,
+    help="The path to the directory to collect information from.",
+    nargs=1,
+    default=".",
 )
 parser.add_argument("-O", "--output", type=Path, help="The path to the output file.")
 parser.add_argument(
-    "--delimiter", type=str, help="The delimiter to use in the output file (',', ';', or 'tab').", default=","
+    "--delimiter",
+    type=str,
+    help="The delimiter to use in the output file (',', ';', or 'tab').",
+    default=",",
 )
 parser.add_argument(
-    "--search", type=str, help="Search for files containing the given string in filename or attributes.", default=None
+    "--search",
+    type=str,
+    help="Search for files containing the given string in filename or attributes.",
+    default=None,
 )
 
 
@@ -42,7 +52,11 @@ def main():
         ModernOfficeResearcher(),
         LegacyOfficeResearcher(),
     ]
-    collector = Collector(args.path[0], researchers, progress_bar=partial(tqdm, desc="Collecting", unit=" files"))
+    collector = Collector(
+        args.path[0],
+        researchers,
+        progress_bar=partial(tqdm, desc="Collecting", unit=" files"),
+    )
     collector.collect(show_progress=bool(args.output))
     stats_calculator = StatCalculator(collector.collection)
 
@@ -52,7 +66,12 @@ def main():
         search_results = search_engine.search(args.search)
 
     if args.output:
-        write_csv(args.output, collector.collection.keys, collector.collection, delimiter=args.delimiter)
+        write_csv(
+            args.output,
+            collector.collection.keys,
+            collector.collection,
+            delimiter=args.delimiter,
+        )
     else:
         print("Total files:", stats_calculator.total_files())
         print("Total file size:", convert_size(stats_calculator.total_size()))
