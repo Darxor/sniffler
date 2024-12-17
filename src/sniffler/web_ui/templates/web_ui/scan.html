@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for scan in scans %}
+                        {% for scan in scans|dictsortreversed:"created_at" %}
                             <tr>
                                 <td>{{ scan.path }}</td>
                                 <td>{{ scan.created_at|date:"d-m-Y H:i" }}</td>
