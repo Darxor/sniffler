@@ -35,6 +35,27 @@ or
 python src/sniffler/gui.py 
 ```
 
+### Django Web GUI
+
+To run the Django web GUI, follow these steps:
+
+1. Apply migrations:
+    ```bash
+    rye run dj migrate
+    ```
+
+2. Create a superuser:
+    ```bash
+    rye run dj createsuperuser
+    ```
+
+3. Run the development server:
+    ```bash
+    rye run dj runserver
+    ```
+
+4. Access the web GUI at `http://127.0.0.1:8000/`.
+
 ### CLI version
 
 ```bash
