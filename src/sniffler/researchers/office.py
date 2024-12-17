@@ -8,7 +8,8 @@ from .base import InfoValue
 
 
 class ModernOfficeResearcher:
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return file.suffix.lower() in {".docx", ".pptx", ".xlsx"}
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:
@@ -20,7 +21,8 @@ class ModernOfficeResearcher:
 
 
 class LegacyOfficeResearcher:
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return file.suffix.lower() in {".doc", ".ppt", ".xls"}
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:

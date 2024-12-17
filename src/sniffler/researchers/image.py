@@ -10,8 +10,8 @@ class ImageResearcher:
     """
     A class to perform research operations on image files.
     """
-
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return file.suffix.lower() in {
             ".jpg",
             ".png",

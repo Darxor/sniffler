@@ -9,8 +9,8 @@ class AudioResearcher:
     """
     A class to perform research operations on audio files.
     """
-
-    def accepts(self, file: Path) -> bool:
+    @staticmethod
+    def accepts(file: Path) -> bool:
         return file.suffix.lower() in {".mp3", ".flac", ".ogg", ".wav", ".m4a"}
 
     def get_info(self, file: Path) -> dict[str, InfoValue]:
