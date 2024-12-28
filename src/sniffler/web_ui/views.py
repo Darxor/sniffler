@@ -1,10 +1,12 @@
 import json
+from pathlib import Path
 
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
 from sniffler.core.stats import StatCalculator
@@ -24,41 +26,57 @@ class HomePageView(TemplateView):
         return context
 
 
-class ScanView(FormView, ListView):
+class ScanView(FormMixin, ListView):  # Change inheritance to FormMixin and ListView
     template_name = "web_ui/scan.html"
     form_class = ScanForm
     success_url = reverse_lazy("scan")
     model = ScanResult
     context_object_name = "scans"
 
-    def form_valid(self, form):
-        self.object_list = self.get_queryset()
-        path = form.cleaned_data["path"]
-        try:
-            scan_result = run_scan(path)
-        except FileNotFoundError:
-            messages.error(self.request, "Path not found.")
-            return super().form_invalid(form)
-
-        scan_instance = ScanResult.objects.create(path=path, result=json.dumps(scan_result, cls=CollectionJSONEncoder))
-        self.request.session["active_scan_id"] = scan_instance.id
-        messages.success(self.request, "Scan completed successfully and set as active.")
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.get_form()
+        return context
 
     def post(self, request, *args, **kwargs):
         if "scan_id" in request.POST:
             scan_id = request.POST.get("scan_id")
-            if scan_id:
+            try:
+                ScanResult.objects.get(id=scan_id)  # Validate scan_id exists
                 request.session["active_scan_id"] = scan_id
                 messages.success(request, "Active scan set successfully.")
+            except ScanResult.DoesNotExist:
+                messages.error(request, "Selected scan does not exist.")
+            return redirect("scan")
         elif "remove_scan_id" in request.POST:
             remove_scan_id = request.POST.get("remove_scan_id")
             if remove_scan_id:
                 ScanResult.objects.filter(id=remove_scan_id).delete()
                 messages.success(request, "Scan removed successfully.")
+            return redirect("scan")
         else:
-            return super().post(request, *args, **kwargs)
-        return redirect("scan")
+            self.object_list = self.get_queryset()
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+
+    def form_valid(self, form):
+        path = form.cleaned_data["path"]
+        try:
+            scan_result = run_scan(path)
+        except FileNotFoundError:
+            messages.error(self.request, "Path not found.")
+            return self.form_invalid(form)
+        except Exception:  # Handle all other exceptions
+            messages.error(self.request, "An error occurred during scanning.")
+            return self.form_invalid(form)
+
+        scan_instance = ScanResult.objects.create(path=path, result=json.dumps(scan_result, cls=CollectionJSONEncoder))
+        self.request.session["active_scan_id"] = scan_instance.id
+        messages.success(self.request, "Scan completed successfully and set as active.")
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class StatsView(TemplateView):
@@ -80,6 +98,8 @@ class StatsView(TemplateView):
                 context["top_documents_by_pages"] = stats_calculator.top_n_documents_by_pages(10)
             except ScanResult.DoesNotExist:
                 context["error"] = "Active scan not found. Please run a new scan, or select one from Scans."
+            except json.JSONDecodeError:  # Catch JSON decoding errors
+                context["error"] = "Invalid scan data encountered."
         else:
             context["error"] = "No active scan. Please run a new scan, or select one from Scans."
         return context
