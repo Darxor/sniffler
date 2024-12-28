@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
