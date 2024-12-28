@@ -56,6 +56,14 @@ To run the Django web GUI, follow these steps:
 
 4. Access the web GUI at `http://127.0.0.1:8000/`.
 
+#### Testing the Django Web GUI
+
+To test the Django Web GUI run:
+
+```bash
+rye run dj test sniffler.web_ui
+```
+
 ### CLI version
 
 ```bash
