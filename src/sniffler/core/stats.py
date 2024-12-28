@@ -90,7 +90,11 @@ class StatCalculator:
             return int(file.get("page_count", 0))
 
         def get_path(file):
-            return Path(file.get("path"))
+            path = file.get("path")
+            if path:
+                return Path(path)
+            else:
+                return Path("")
 
         documents = [
             file
