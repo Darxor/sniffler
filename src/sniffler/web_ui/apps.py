@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class WebUiConfig(AppConfig):
+class WebUIConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "web_ui"
+    name = "sniffler.web_ui"

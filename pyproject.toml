@@ -1,6 +1,6 @@
 [project]
 name = "sniffler"
-version = "0.5.0"
+version = "0.7.0"
 description = "Sniff out stuff about your files"
 authors = [
     { name = "Alexander Sevostianov" }
@@ -34,7 +34,7 @@ dev-dependencies = [
 ]
 
 [tool.rye.scripts]
-dj = "python django_manage.py"
+dj = { call = "sniffler.django_manage" }
 
 [tool.hatch.metadata]
 allow-direct-references = true
