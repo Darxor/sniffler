@@ -1,4 +1,6 @@
 import os
+import tomllib
+from datetime import datetime
 
 # Setup for Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sniffler.web.settings")
@@ -11,9 +13,15 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sniffler.web.settings")
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "sniffler"
-copyright = "2024, Author"
-author = "Author"
+with open("../../pyproject.toml", "rb") as f:
+    toml = tomllib.load(f)
+
+pyproject = toml["project"]
+
+project = pyproject["name"]
+release = pyproject["version"]
+author = ",".join([author["name"] for author in pyproject["authors"]])
+copyright = f"{datetime.now().year} {author}"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
