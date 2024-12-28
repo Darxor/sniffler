@@ -56,6 +56,14 @@ To run the Django web GUI, follow these steps:
 
 4. Access the web GUI at `http://127.0.0.1:8000/`.
 
+#### Testing the Django Web GUI
+
+To test the Django Web GUI run:
+
+```bash
+rye run dj test sniffler.web_ui
+```
+
 ### CLI version
 
 ```bash
@@ -87,3 +95,28 @@ sniffler . -O output.csv
 ```
 
 Note: When no output file is specified, the output will be printed to the console as a CSV.
+
+## Documentation
+
+To generate the documentation, run the following command:
+
+```bash
+rye run build-docs
+```
+
+Documentation will be available in the `docs/build/html` directory.
+
+To view the documentatation, run:
+
+1. On Windows:
+  ```bash
+  start docs/build/html/index.html
+  ```
+2. On MacOS:
+  ```bash
+  open docs/build/html/index.html
+  ```
+3. On Linux:
+  ```bash
+  xdg-open docs/build/html/index.html
+  ```

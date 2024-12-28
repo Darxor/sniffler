@@ -10,8 +10,21 @@
 #   universal: false
 
 -e file:.
+accessible-pygments==0.0.5
+    # via pydata-sphinx-theme
+alabaster==1.0.0
+    # via sphinx
 asgiref==3.8.1
     # via django
+babel==2.16.0
+    # via pydata-sphinx-theme
+    # via sphinx
+beautifulsoup4==4.12.3
+    # via pydata-sphinx-theme
+certifi==2024.12.14
+    # via requests
+charset-normalizer==3.4.1
+    # via requests
 customtkinter==5.2.2
     # via sniffler
 darkdetect==0.8.0
@@ -21,6 +34,17 @@ django==5.1.4
     # via sniffler
 django-bootstrap5==24.3
     # via sniffler
+docutils==0.21.2
+    # via pydata-sphinx-theme
+    # via sphinx
+idna==3.10
+    # via requests
+imagesize==1.4.1
+    # via sphinx
+jinja2==3.1.5
+    # via sphinx
+markupsafe==3.0.2
+    # via jinja2
 mutagen==1.47.0
     # via sniffler
 nodeenv==1.9.1
@@ -29,15 +53,49 @@ olefile==0.47
     # via sniffler
 packaging==24.2
     # via customtkinter
+    # via sphinx
 pillow==11.0.0
     # via sniffler
+pydata-sphinx-theme==0.16.1
+    # via sphinx-book-theme
+pygments==2.18.0
+    # via accessible-pygments
+    # via pydata-sphinx-theme
+    # via sphinx
 pymupdf==1.25.1
     # via sniffler
 pyright==1.1.390
+requests==2.32.3
+    # via sphinx
 ruff==0.8.3
+snowballstemmer==2.2.0
+    # via sphinx
+soupsieve==2.6
+    # via beautifulsoup4
+sphinx==8.1.3
+    # via pydata-sphinx-theme
+    # via sphinx-autodoc-typehints
+    # via sphinx-book-theme
+sphinx-autodoc-typehints==2.5.0
+sphinx-book-theme==1.1.3
+sphinxcontrib-applehelp==2.0.0
+    # via sphinx
+sphinxcontrib-devhelp==2.0.0
+    # via sphinx
+sphinxcontrib-htmlhelp==2.1.0
+    # via sphinx
+sphinxcontrib-jsmath==1.0.1
+    # via sphinx
+sphinxcontrib-qthelp==2.0.0
+    # via sphinx
+sphinxcontrib-serializinghtml==2.0.0
+    # via sphinx
 sqlparse==0.5.3
     # via django
 tqdm==4.67.1
     # via sniffler
 typing-extensions==4.12.2
+    # via pydata-sphinx-theme
     # via pyright
+urllib3==2.3.0
+    # via requests

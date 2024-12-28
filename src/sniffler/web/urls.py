@@ -20,5 +20,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("web_ui.urls")),
+    path("", include("sniffler.web_ui.urls")),
 ]
